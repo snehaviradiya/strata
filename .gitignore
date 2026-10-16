@@ -5,3 +5,6 @@ coverage/
 *.log
 report.json
 report.html
+test-repo/
+report.json
+report.html
