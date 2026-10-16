@@ -1,0 +1,24 @@
+{
+  "name": "strata",
+  "version": "1.0.0",
+  "description": "Git repository history analysis CLI",
+  "type": "module",
+  "bin": {
+    "strata": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "git",
+    "cli",
+    "repository-analysis",
+    "developer-tools"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "commander": "^14.0.0"
+  }
+}
