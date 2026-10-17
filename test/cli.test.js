@@ -28,3 +28,15 @@ test("rejects a non-numeric commit limit", () => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Limit must be a positive integer/);
 });
+
+
+test("rejects a repository path that does not exist", () => {
+  const result = spawnSync(
+    process.execPath,
+    [cliPath, "./path-that-does-not-exist"],
+    { encoding: "utf8" }
+  );
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Strata error:/);
+});
