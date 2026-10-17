@@ -50,3 +50,55 @@ test("handles an empty commit history", () => {
   assert.deepEqual(result.coupledFiles, []);
   assert.deepEqual(result.ownership, []);
 });
+
+// Check that duplicate files are counted only once per commit.
+test("counts a file only once in a commit", () => {
+  const commits = [
+    {
+      author: "Sneha",
+      files: ["src/app.js", "src/app.js", "README.md"]
+    }
+  ];
+
+  const result = analyzeHistory(commits);
+
+  assert.equal(result.summary.totalCommits, 1);
+  assert.equal(result.summary.totalFiles, 2);
+  assert.equal(result.summary.totalDevelopers, 1);
+
+  const appFile = result.files.find(
+    (file) => file.file === "src/app.js"
+  );
+
+  assert.equal(appFile.changes, 1);
+});
+
+// Check ownership when one developer changes a file.
+test("calculates concentrated file ownership", () => {
+  const commits = [
+    { author: "Sneha", files: ["src/app.js"] },
+    { author: "Sneha", files: ["src/app.js"] },
+    { author: "Alex", files: ["src/app.js"] }
+  ];
+
+  const result = analyzeHistory(commits);
+  const ownership = result.ownership[0];
+
+  assert.equal(ownership.file, "src/app.js");
+  assert.equal(ownership.topDeveloper, "Sneha");
+  assert.equal(ownership.topDeveloperChanges, 2);
+  assert.equal(ownership.ownershipShare, 2 / 3);
+});
+
+// Check that files changed together are detected.
+test("detects files changed together", () => {
+  const commits = [
+    { author: "Sneha", files: ["src/app.js", "src/api.js"] },
+    { author: "Alex", files: ["src/app.js", "src/api.js"] }
+  ];
+
+  const result = analyzeHistory(commits);
+
+  assert.equal(result.coupledFiles.length, 1);
+  assert.equal(result.coupledFiles[0].coChanges, 2);
+});
