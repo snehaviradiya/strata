@@ -88,3 +88,22 @@ npm test
 ## License
 
 MIT
+
+
+## Test Coverage
+
+The automated test suite covers:
+
+- Git history analysis and changed-file statistics
+- Empty commit history
+- JSON report generation and output validation
+- HTML report generation
+- HTML escaping of special characters
+- Rejection of invalid commit limits
+- Rejection of nonexistent repository paths
+
+Run all tests with:
+
+```bash
+npm test
+```
