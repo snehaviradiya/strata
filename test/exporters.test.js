@@ -70,3 +70,41 @@ test("exports analysis as HTML", (t) => {
   assert.match(html, /src\/api\.js/);
   assert.match(html, /Developer Contributions/);
 });
+
+
+test("escapes special characters in HTML reports", (t) => {
+  const folder = fs.mkdtempSync(
+    path.join(os.tmpdir(), "strata-escape-")
+  );
+  t.after(() => fs.rmSync(folder, { recursive: true, force: true }));
+
+  const output = path.join(folder, "report.html");
+
+  // Use characters that must be escaped in HTML.
+  const unsafeResult = {
+    ...sampleResult,
+    files: [
+      {
+        file: "<script>alert('x')</script>",
+        changes: 1,
+        developerCount: 1
+      }
+    ],
+    developers: [
+      {
+        author: "Asha & Co",
+        commits: 1,
+        filesChanged: 1
+      }
+    ]
+  };
+
+  exportHtml(unsafeResult, output);
+
+  const html = fs.readFileSync(output, "utf8");
+
+  // Confirm HTML special characters are escaped.
+  assert.match(html, /&lt;script&gt;/);
+  assert.match(html, /Asha &amp; Co/);
+  assert.doesNotMatch(html, /<script>alert/);
+});
