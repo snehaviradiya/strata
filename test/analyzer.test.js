@@ -34,3 +34,19 @@ test("analyzes commits and changed files", () => {
   // Both files changed together in one commit.
   assert.equal(result.coupledFiles[0].coChanges, 1);
 });
+
+
+test("handles an empty commit history", () => {
+  const result = analyzeHistory([]);
+
+  assert.deepEqual(result.summary, {
+    totalCommits: 0,
+    totalFiles: 0,
+    totalDevelopers: 0
+  });
+
+  assert.deepEqual(result.files, []);
+  assert.deepEqual(result.developers, []);
+  assert.deepEqual(result.coupledFiles, []);
+  assert.deepEqual(result.ownership, []);
+});
