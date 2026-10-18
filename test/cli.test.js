@@ -8,7 +8,7 @@ import os from "node:os";
 
 // Locate the CLI entry point.
 const cliPath = path.resolve("src/cli.js");
-const repoPath = path.resolve("test/test-repo");
+const repoPath = path.resolve("test-repo");
 
 // Check invalid commit limits.
 test("rejects a zero commit limit", () => {
