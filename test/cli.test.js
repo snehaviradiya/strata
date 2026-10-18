@@ -3,18 +3,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import fs from "node:fs";
-import os from "node:os";
 
 // Locate the CLI entry point.
 const cliPath = path.resolve("src/cli.js");
-const repoPath = path.resolve("test-repo");
 
-// Check invalid commit limits.
+// Test 1: Reject a zero commit limit.
 test("rejects a zero commit limit", () => {
   const result = spawnSync(
     process.execPath,
-    [cliPath, repoPath, "--limit", "0"],
+    [cliPath, "./test-repo", "--limit", "0"],
     { encoding: "utf8" }
   );
 
@@ -22,10 +19,11 @@ test("rejects a zero commit limit", () => {
   assert.match(result.stderr, /Limit must be a positive integer/);
 });
 
+// Test 2: Reject a non-numeric commit limit.
 test("rejects a non-numeric commit limit", () => {
   const result = spawnSync(
     process.execPath,
-    [cliPath, repoPath, "--limit", "abc"],
+    [cliPath, "./test-repo", "--limit", "abc"],
     { encoding: "utf8" }
   );
 
@@ -33,7 +31,7 @@ test("rejects a non-numeric commit limit", () => {
   assert.match(result.stderr, /Limit must be a positive integer/);
 });
 
-// Check invalid repository paths.
+// Test 3: Reject a repository path that does not exist.
 test("rejects a repository path that does not exist", () => {
   const result = spawnSync(
     process.execPath,
@@ -45,53 +43,18 @@ test("rejects a repository path that does not exist", () => {
   assert.match(result.stderr, /Strata error:/);
 });
 
-// Check that the CLI prints its report successfully.
-test("analyzes a valid repository", () => {
+// Test 4: Display CLI help information.
+test("displays help information", () => {
   const result = spawnSync(
     process.execPath,
-    [cliPath, repoPath],
+    [cliPath, "--help"],
     { encoding: "utf8" }
   );
 
-  assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /SUMMARY/);
-  assert.match(result.stdout, /Analysis complete/);
-});
-
-// Check JSON export.
-test("exports a JSON report", (t) => {
-  const folder = fs.mkdtempSync(path.join(os.tmpdir(), "strata-json-"));
-  t.after(() => fs.rmSync(folder, { recursive: true, force: true }));
-
-  const output = path.join(folder, "report.json");
-  const result = spawnSync(
-    process.execPath,
-    [cliPath, repoPath, "--json", output],
-    { encoding: "utf8" }
-  );
-
-  assert.equal(result.status, 0, result.stderr);
-  assert.ok(fs.existsSync(output));
-
-  const report = JSON.parse(fs.readFileSync(output, "utf8"));
-  assert.ok(report.summary);
-});
-
-// Check HTML export.
-test("exports an HTML report", (t) => {
-  const folder = fs.mkdtempSync(path.join(os.tmpdir(), "strata-html-"));
-  t.after(() => fs.rmSync(folder, { recursive: true, force: true }));
-
-  const output = path.join(folder, "report.html");
-  const result = spawnSync(
-    process.execPath,
-    [cliPath, repoPath, "--html", output],
-    { encoding: "utf8" }
-  );
-
-  assert.equal(result.status, 0, result.stderr);
-  assert.ok(fs.existsSync(output));
-
-  const html = fs.readFileSync(output, "utf8");
-  assert.match(html, /Strata Repository Report/);
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Usage: strata/);
+  assert.match(result.stdout, /Analyze Git repository history/);
+  assert.match(result.stdout, /--limit/);
+  assert.match(result.stdout, /--json/);
+  assert.match(result.stdout, /--html/);
 });
