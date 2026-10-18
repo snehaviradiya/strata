@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node src/cli.js",
-    "test": "node --test"
+    "test": "node --test",
+    "check": "node --check src/cli.js && node --check src/git.js && node --check src/analyzer.js && node --check src/report.js && node --check src/exporters.js"
   },
   "keywords": [
     "git",

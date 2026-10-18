@@ -1,3 +1,4 @@
+#!/usr/bin/env
 
 import { Command } from "commander";
 import { validateRepository, getCommits } from "./git.js";
