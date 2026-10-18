@@ -9,7 +9,7 @@ Strata is a command-line tool that analyzes Git repository history to help devel
 - Find files that are often changed together
 - Summarize developer contributions
 - Identify files with concentrated ownership
-- Display a coloured terminal report
+- Display a colored terminal report
 - Export analysis as JSON
 - Generate standalone HTML reports
 - Validate repository paths and commit limits
@@ -68,6 +68,12 @@ Generate both reports:
 npm start -- ./test-repo --json report.json --html report.html
 ```
 
+Display CLI help:
+
+```bash
+node src/cli.js --help
+```
+
 ## Analysis Metrics
 
 - **File changes:** Number of analyzed commits in which each file was modified.
@@ -79,16 +85,17 @@ These metrics describe historical patterns and should not be treated as definiti
 
 ## Testing
 
-Run the automated tests:
+Run the automated test suite:
 
 ```bash
 npm test
 ```
 
-## License
+Check JavaScript syntax:
 
-MIT
-
+```bash
+npm run check
+```
 
 ## Test Coverage
 
@@ -96,14 +103,15 @@ The automated test suite covers:
 
 - Git history analysis and changed-file statistics
 - Empty commit history
+- File-change counting and ownership concentration
+- Detection of files changed together
 - JSON report generation and output validation
 - HTML report generation
 - HTML escaping of special characters
 - Rejection of invalid commit limits
 - Rejection of nonexistent repository paths
+- CLI help output
 
-Run all tests with:
+## License
 
-```bash
-npm test
-```
+MIT
